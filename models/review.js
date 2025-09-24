@@ -22,6 +22,16 @@ const reviewSchema = new mongoose.Schema({
         type:Date,
         required:true,
         default:Date.now()
+    },
+    profilePicture :{
+        type:String,
+        required:true,
+        default:""
+    },
+    isApproved:{
+        type:Boolean,
+        required:true,
+        default:false
     }
 });
 
