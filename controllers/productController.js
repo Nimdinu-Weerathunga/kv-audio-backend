@@ -1,0 +1,29 @@
+import Product from "../models/product.js";
+
+export function addProduct(req, res) {
+    console.log(req.user);
+
+    
+    if(req.user == null){
+        res.status(401).json({message : "Please login and try again"});
+        return;
+    }
+
+    if(req.user.role != "admin"){
+        res.status(403).json({message : "You are not authorized to perform this action"});
+        return;
+    }
+
+    const data = req.body; // Get product data from request body
+
+    const newProduct = new Product(data); // Create a new Product instance
+
+    newProduct.save() // Save to the database
+        .then(() => {
+            res.json("Product added successfully");
+        })
+        .catch((error) => {
+            res.status(500).json({error : "Product addition failed"});
+        });
+}
+
