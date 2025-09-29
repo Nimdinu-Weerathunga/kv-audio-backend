@@ -26,14 +26,37 @@ export function addReview(req, res) {
     
 }
 
-export function getReviews(req, res) {
+export async function getReviews(req, res) {
+    const user = req.user;
+
+    try {
+        // if user is not admin, return only approved reviews
+        if(user == null || user.role != "admin") {
+
+            const reviews = await Review.find({isApproved: true});
+            res.json(reviews);
+           return;
+        }
+        if(user.role == "admin") {
+            const reviews = await Review.find();
+            res.json(reviews);
+        }
+
+    }catch (e) {
+        res.status(500).json({error: "Failed to fetch reviews"});
+    }
+}
+
+/* export function getReviews(req, res) {
     const user = req.user;
     if(user == null || user.role != "admin") {
 
         Review.find({isApproved: true})
         .then((reviews) => {
             res.json(reviews);
-        })
+        }).catch((error) => {
+            res.status(500).json({error: "Failed to fetch reviews"});
+        });
        return;
     }
     if(user.role == "admin") {
@@ -42,7 +65,8 @@ export function getReviews(req, res) {
             res.json(reviews);
         })
     }
-}
+} */
+
 export function deleteReview(req, res) {
     const email = req.params.email;
     if(req.user == null) {
