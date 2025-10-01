@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
+
 dotenv.config();
 
 export function registerUser(req, res) {
@@ -40,7 +41,8 @@ export function loginUser(req, res) {
                         lastName: user.lastName,
                         email: user.email,
                         role: user.role,
-                        profilePicture: user.profilePicture
+                        profilePicture: user.profilePicture,
+                        phone: user.phone
                     }, process.env.JWT_SECRET);
                     res.json({message:"Login successful", token: token});
                 } else {
@@ -49,6 +51,29 @@ export function loginUser(req, res) {
         }  
         })
         
+}
+
+export function isItAdmin(req){
+
+    let isAdmin = false;
+    if(req.user != null ){
+        if(req.user.role == "admin"){
+            isAdmin = true;
+        }
+    }
+    return isAdmin;
+}
+
+export function isItCustomer(req){
+
+    let isCustomer = false;
+
+    if(req.user != null ){
+        if(req.user.role == "customer"){
+            isCustomer = true;
+        }
+    }
+    return isCustomer;
 }
 
 //  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJLYW1hbCIsImxhc3ROYW1lIjoiRG9lIiwiZW1haWwiOiJrYW1hbDEyQGdtYWlsLmNvbSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc1ODY0NDI3N30.9rdFx020Ju055AnPiAEovlq7cCUvfbuNvz6PcszRmqk"
